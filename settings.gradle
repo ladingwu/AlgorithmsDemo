@@ -1,3 +1,2 @@
-include ':lib2'
 include ':lib'
 include ':app'
