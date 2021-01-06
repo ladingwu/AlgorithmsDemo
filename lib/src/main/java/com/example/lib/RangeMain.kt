@@ -1,15 +1,15 @@
 package club.jinmei.lib
 
-const val MAX_NUM = 10_000
+
+const val MAX_NUM = 100
 object RangeMain {
     @JvmStatic
      fun main(args:Array<String>){
-//        var range = getRange()
-//        range.testSort(createArrays())
-        RangeCompator().sortAll(arrayOf("choose","insert"))
+//       getRange().testSort(createArrays(),true)
+        RangeCompator().sortAll(arrayOf("choose","insert","shell"))
 
     }
-    fun getRange():BaseRange = InsertRange()
+    fun getRange():BaseRange = ShellRange()
     fun createArrays():IntArray{
         var array = IntArray(MAX_NUM+1)
         for (i in 0.. MAX_NUM){
@@ -19,32 +19,85 @@ object RangeMain {
     }
 }
 class RangeCompator(){
+    companion object{
+        private const val  MAX_NUM_TEST = 100_000
+    }
     fun sortAll(ranges:Array<String>){
         ranges.forEach {
             sort(it)
         }
     }
     private fun sort(rangeStr:String){
-        var range = when(rangeStr){
+        var range = when(rangeStr.toLowerCase()){
             "insert"->InsertRange()
             "choose"->ChooseRange()
+            "shell"->ShellRange()
             else->null
         }
         range?.testSort(createArrays())
     }
 
     fun createArrays():IntArray{
-        var array = IntArray(MAX_NUM+1)
-        for (i in 0.. MAX_NUM){
-            array[i] = (Math.random()* MAX_NUM).toInt()
+        var array = IntArray(MAX_NUM_TEST+1)
+        for (i in 0.. MAX_NUM_TEST){
+            array[i] = (Math.random()* MAX_NUM_TEST).toInt()
         }
         return array
     }
 }
 
+class ShellRange:BaseRange() {
+//    override fun sort(intArray: IntArray) {
+//        var size = intArray.size
+//        var n = size/2
+////        while (n<=size/2){
+////            n = n*2+1
+////        }
+//        while (n>=1){
+//            for (i in n until size){
+//                var j = i
+//                while (j>=n){
+//                    if (less(intArray[j],intArray[j-n])) exchange(intArray,j,j-n)
+//                    j -=n
+//                }
+//            }
+//            n /= 2
+//        }
+//}
+    override fun sort(intArray: IntArray) {
+        // 对 arr 进行拷贝，不改变参数内容
+        val arr: IntArray =intArray
+
+        var gap = 1
+        while (gap < arr.size / 3) {
+            gap = gap * 3 + 1
+        }
+
+        while (gap > 0) {
+            for (i in gap until arr.size) {
+                val tmp = arr[i]
+                var j = i - gap
+                while (j >= 0 && arr[j] > tmp) {
+                    arr[j + gap] = arr[j]
+                    j -= gap
+                }
+                arr[j + gap] = tmp
+            }
+            gap = Math.floor(gap / 3.toDouble()).toInt()
+        }
+
+
+    }
+
+    override fun rangeName(): String {
+        return "shellRange "
+    }
+
+}
 /**
  * 插入排序
- * 时间复杂度是O(n^2)
+ * 时间复杂度是O(n^2),但是利用了每次遍历得到的排序信息
+ * 比选择排序更有效
  */
 class InsertRange:BaseRange(){
     override fun sort(intArray: IntArray) {
@@ -93,12 +146,12 @@ class ChooseRange : BaseRange() {
 abstract class BaseRange{
     fun less(a:Int,b:Int) = a<b
 
-    fun testSort(intArray: IntArray):Long{
-        intArray.printSelf()
+    fun testSort(intArray: IntArray,print: Boolean = false):Long{
+        intArray.printSelf(print)
         var start = System.currentTimeMillis()
         sort(intArray)
         println("time for ${rangeName()}: ${System.currentTimeMillis()-start}ms")
-        intArray.printSelf()
+        intArray.printSelf(print)
         return System.currentTimeMillis()-start
     }
     fun exchange(intArray: IntArray,a:Int,b:Int){
@@ -110,11 +163,14 @@ abstract class BaseRange{
     abstract fun rangeName():String
 }
 
-fun  IntArray.printSelf(){
-//    println("start ======")
-//    forEach {
-//        print("$it ,")
-//    }
+fun  IntArray.printSelf(print:Boolean  = false){
+    if (!print){
+        return
+    }
+    println("start ======")
+    forEach {
+        print("$it ,")
+    }
     println()
-//    println("done ======")
+    println("done ======")
 }
