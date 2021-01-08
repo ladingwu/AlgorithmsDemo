@@ -1,12 +1,12 @@
 package club.jinmei.lib
 
 
-const val MAX_NUM = 100
+const val MAX_NUM = 23
 object RangeMain {
     @JvmStatic
      fun main(args:Array<String>){
-//       getRange().testSort(createArrays(),true)
-        RangeCompator().sortAll(arrayOf("choose","insert","shell"))
+       getRange().testSort(createArrays(),true)
+//        RangeCompator().sortAll(arrayOf("choose","insert","shell"))
 
     }
     fun getRange():BaseRange = ShellRange()
@@ -47,47 +47,46 @@ class RangeCompator(){
 }
 
 class ShellRange:BaseRange() {
-//    override fun sort(intArray: IntArray) {
-//        var size = intArray.size
-//        var n = size/2
-////        while (n<=size/2){
-////            n = n*2+1
-////        }
-//        while (n>=1){
-//            for (i in n until size){
-//                var j = i
-//                while (j>=n){
-//                    if (less(intArray[j],intArray[j-n])) exchange(intArray,j,j-n)
-//                    j -=n
-//                }
-//            }
-//            n /= 2
-//        }
-//}
     override fun sort(intArray: IntArray) {
-        // 对 arr 进行拷贝，不改变参数内容
-        val arr: IntArray =intArray
-
-        var gap = 1
-        while (gap < arr.size / 3) {
-            gap = gap * 3 + 1
-        }
-
-        while (gap > 0) {
-            for (i in gap until arr.size) {
-                val tmp = arr[i]
-                var j = i - gap
-                while (j >= 0 && arr[j] > tmp) {
-                    arr[j + gap] = arr[j]
-                    j -= gap
+        var size = intArray.size
+        var n = size/2
+        while (n>=1){
+            println(n.toString() +" ----")
+            for (i in n until size){
+                var j = i
+                while (j>=n && less(intArray[j],intArray[j-n])){
+                    exchange(intArray,j,j-n)
+                    j -=n
                 }
-                arr[j + gap] = tmp
             }
-            gap = Math.floor(gap / 3.toDouble()).toInt()
+            intArray.printSelf(true)
+            n /= 2
         }
-
-
-    }
+}
+//    override fun sort(intArray: IntArray) {
+//        // 对 arr 进行拷贝，不改变参数内容
+//        val arr: IntArray =intArray
+//
+//        var gap = 1
+//        while (gap < arr.size / 3) {
+//            gap = gap * 3 + 1
+//        }
+//
+//        while (gap > 0) {
+//            for (i in gap until arr.size) {
+//                val tmp = arr[i]
+//                var j = i - gap
+//                while (j >= 0 && arr[j] > tmp) {
+//                    arr[j + gap] = arr[j]
+//                    j -= gap
+//                }
+//                arr[j + gap] = tmp
+//            }
+//            gap = Math.floor(gap / 3.toDouble()).toInt()
+//        }
+//
+//
+//    }
 
     override fun rangeName(): String {
         return "shellRange "
