@@ -6,7 +6,7 @@ const val MAX_NUM = 25
 object RangeMain {
     @JvmStatic
      fun main(args:Array<String>){
-       getRange().testSort(createArrays(),true)
+        getSort().testSort(createArrays(),true)
 //        RangeCompator().sortAll(arrayOf("choose","insert","shell","quick"))
 
 //        var a = mutableListOf<Int>(5,3,6,4,1,4,7,6,8,5,2,45,23,34,54)
@@ -25,7 +25,7 @@ object RangeMain {
 //            print(it.toString()+",")
 //        }
     }
-    fun getRange():BaseRange = QuickRange()
+    fun getSort():BaseSort = QuickSort()
     fun createArrays():IntArray{
         var array = IntArray(MAX_NUM+1)
         for (i in 0.. MAX_NUM){
@@ -45,10 +45,10 @@ class RangeCompator(){
     }
     private fun sort(rangeStr:String){
         var range = when(rangeStr.toLowerCase()){
-            "insert"->InsertRange()
-            "choose"->ChooseRange()
-            "shell"->ShellRange()
-            "quick"->QuickRange()
+            "insert"->InsertSort()
+            "choose"->ChooseSort()
+            "shell"->ShellSort()
+            "quick"->QuickSort()
             else->null
         }
         range?.testSort(createArrays())
@@ -67,7 +67,7 @@ class RangeCompator(){
  * 快速排序
  * 每次找到一个数，把大于它的放在右边，小于它的放在左边
  */
-class QuickRange:BaseRange(){
+class QuickSort:BaseSort(){
     override fun sort(intArray: IntArray) {
         sort(intArray,0,intArray.size-1)
     }
@@ -108,11 +108,11 @@ class QuickRange:BaseRange(){
     }
 
     override fun rangeName(): String {
-        return "quickRange"
+        return "quickSort "
     }
 
 }
-class ShellRange:BaseRange() {
+class ShellSort:BaseSort() {
     override fun sort(intArray: IntArray) {
         var size = intArray.size
         var n = size/2
@@ -154,7 +154,7 @@ class ShellRange:BaseRange() {
 //    }
 
     override fun rangeName(): String {
-        return "shellRange "
+        return "shellSort "
     }
 
 }
@@ -163,7 +163,7 @@ class ShellRange:BaseRange() {
  * 时间复杂度是O(n^2),但是利用了每次遍历得到的排序信息
  * 比选择排序更有效
  */
-class InsertRange:BaseRange(){
+class InsertSort:BaseSort(){
     override fun sort(intArray: IntArray) {
         for (i in 1 until intArray.size){
             for (j in i downTo 0){
@@ -180,7 +180,7 @@ class InsertRange:BaseRange(){
     }
 
     override fun rangeName(): String {
-        return "insertRange "
+        return "insertSort "
     }
 
 }
@@ -190,7 +190,7 @@ class InsertRange:BaseRange(){
  * 交换n次，比较
  * 时间复杂度 O(n^2)
  */
-class ChooseRange : BaseRange() {
+class ChooseSort : BaseSort() {
     override fun sort(intArray: IntArray) {
         intArray.forEachIndexed { index, i ->
             var minIndex = index
@@ -201,13 +201,13 @@ class ChooseRange : BaseRange() {
         }
     }
 
-    override fun rangeName() = "chooseRange "
+    override fun rangeName() = "chooseSort "
 
 }
 
 
 
-abstract class BaseRange{
+abstract class BaseSort{
     fun less(a:Int,b:Int) = a<b
 
     fun testSort(intArray: IntArray,print: Boolean = false):Long{
