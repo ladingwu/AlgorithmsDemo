@@ -1,15 +1,31 @@
 package club.jinmei.lib
 
 
-const val MAX_NUM = 23
+
+const val MAX_NUM = 25
 object RangeMain {
     @JvmStatic
      fun main(args:Array<String>){
        getRange().testSort(createArrays(),true)
-//        RangeCompator().sortAll(arrayOf("choose","insert","shell"))
+//        RangeCompator().sortAll(arrayOf("choose","insert","shell","quick"))
 
+//        var a = mutableListOf<Int>(5,3,6,4,1,4,7,6,8,5,2,45,23,34,54)
+//        Collections.sort(a,object :Comparator<Int>{
+//            override fun compare(p0: Int, p1: Int): Int {
+//                if (p0>p1) {
+//                    return -1  // 不调整顺序 ，保持p0>p1 即降序                }
+//
+//                }
+//                return 0
+//
+//            }
+//
+//        })
+//        a.forEach {
+//            print(it.toString()+",")
+//        }
     }
-    fun getRange():BaseRange = ShellRange()
+    fun getRange():BaseRange = QuickRange()
     fun createArrays():IntArray{
         var array = IntArray(MAX_NUM+1)
         for (i in 0.. MAX_NUM){
@@ -32,6 +48,7 @@ class RangeCompator(){
             "insert"->InsertRange()
             "choose"->ChooseRange()
             "shell"->ShellRange()
+            "quick"->QuickRange()
             else->null
         }
         range?.testSort(createArrays())
@@ -46,12 +63,61 @@ class RangeCompator(){
     }
 }
 
+/**
+ * 快速排序
+ * 每次找到一个数，把大于它的放在右边，小于它的放在左边
+ */
+class QuickRange:BaseRange(){
+    override fun sort(intArray: IntArray) {
+        sort(intArray,0,intArray.size-1)
+    }
+
+    fun sort(intArray: IntArray,start:Int,end:Int){
+        if (start>=end){
+            return
+        }
+        var i = start
+        var j = end
+        var target = start
+        while (i <= j) {
+            while (i <= j) {
+                if (intArray[target]>intArray[j]){
+                    exchange(intArray, target, j)
+                    target = j
+                    j--
+                    break
+                }
+                j--
+            }
+
+
+            while (i <= j) {
+                if (intArray[target]< intArray[i]){
+                    exchange(intArray, target, i)
+                    target = i
+                    i++
+                    break
+
+                }
+                i++
+            }
+
+        }
+        sort(intArray,start,target-1)
+        sort(intArray,target+1,end)
+    }
+
+    override fun rangeName(): String {
+        return "quickRange"
+    }
+
+}
 class ShellRange:BaseRange() {
     override fun sort(intArray: IntArray) {
         var size = intArray.size
         var n = size/2
+        // 最后一个增量必须为1
         while (n>=1){
-            println(n.toString() +" ----")
             for (i in n until size){
                 var j = i
                 while (j>=n && less(intArray[j],intArray[j-n])){
@@ -59,7 +125,6 @@ class ShellRange:BaseRange() {
                     j -=n
                 }
             }
-            intArray.printSelf(true)
             n /= 2
         }
 }
