@@ -3,11 +3,11 @@ package club.jinmei.lib
 
 
 const val MAX_NUM = 25
-object RangeMain {
+object SortMain {
     @JvmStatic
      fun main(args:Array<String>){
-        getSort().testSort(createArrays(),true)
-//        RangeCompator().sortAll(arrayOf("choose","insert","shell","quick"))
+//        getSort().testSort(createArrays(),true)
+        RangeCompator().sortAll(arrayOf("choose","insert","shell","quick"))
 
 //        var a = mutableListOf<Int>(5,3,6,4,1,4,7,6,8,5,2,45,23,34,54)
 //        Collections.sort(a,object :Comparator<Int>{
@@ -34,6 +34,22 @@ object RangeMain {
         return array
     }
 }
+
+/**
+ * 二分查找
+ */
+fun find(value:Int,array:IntArray):Int{
+    var start = 0
+    var end = array.size-1
+    while (start<=end){
+        var mid = (end+start)/2
+        var result = value.compareTo(array[mid])
+        if (result>0) end = mid-1
+        else if (result<0) start = mid+1
+        else return mid
+    }
+    return -1
+}
 class RangeCompator(){
     companion object{
         private const val  MAX_NUM_TEST = 100_000
@@ -44,6 +60,7 @@ class RangeCompator(){
         }
     }
     private fun sort(rangeStr:String){
+        createArrays()
         var range = when(rangeStr.toLowerCase()){
             "insert"->InsertSort()
             "choose"->ChooseSort()
@@ -51,15 +68,22 @@ class RangeCompator(){
             "quick"->QuickSort()
             else->null
         }
-        range?.testSort(createArrays())
-    }
+        realArray?.let {
+            range?.testSort(copyArrays(it))
 
+        }
+    }
+    var realArray :IntArray? = null
     fun createArrays():IntArray{
         var array = IntArray(MAX_NUM_TEST+1)
         for (i in 0.. MAX_NUM_TEST){
             array[i] = (Math.random()* MAX_NUM_TEST).toInt()
         }
+        realArray = array
         return array
+    }
+    fun copyArrays(a:IntArray):IntArray{
+        return a.copyOf()
     }
 }
 
@@ -112,6 +136,10 @@ class QuickSort:BaseSort(){
     }
 
 }
+
+/**
+ * 针对插入排序的一种优化排序
+ */
 class ShellSort:BaseSort() {
     override fun sort(intArray: IntArray) {
         var size = intArray.size
